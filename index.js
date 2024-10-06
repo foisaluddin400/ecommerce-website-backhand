@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -10,10 +10,10 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-// const uri = "mongodb://localhost:27017";
 
 
-const uri = "mongodb+srv://ecommerceWebsite:uWDtEi2iELYn0XJ4@cluster0.xlk7a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xlk7a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 
 
@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
+    await client.connect();
     const database = client.db("ecommerceWebsite");
     const menuCollection = database.collection("menu");
     const cartCollection = database.collection("carts");
@@ -51,14 +51,14 @@ async function run() {
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "foisalrk2@gmail.com",
-          pass: "rcbn lvyu fhat xvkc",
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
         },
       });
     
       const mailOptions = {
         from: email,
-        to: "foisalrk2@gmail.com",
+        to: process.env.EMAIL_USER,
         subject: `New Contact Form Message from ${name}`,
         text: `You have received a new message from:
         Name: ${name}
